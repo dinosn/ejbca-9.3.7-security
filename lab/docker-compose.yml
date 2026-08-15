@@ -1,0 +1,17 @@
+# EJBCA Community Edition 9.3.7 reproduction lab.
+# The default 'simple' TLS setup exposes the public web (CMP/OCSP/SCEP) on :8080 with no client
+# certificate required — exactly the surface both findings exercise.
+services:
+  ejbca:
+    image: keyfactor/ejbca-ce:latest      # app build 9.3.7 at time of writing
+    container_name: ejbca
+    hostname: ejbca
+    environment:
+      TLS_SETUP_ENABLED: "simple"
+    ports:
+      - "8080:8080"     # public web: /ejbca/publicweb/cmp/<alias>, /ejbca/publicweb/status/ocsp
+      - "8443:8443"     # admin web (client-cert)
+    volumes:
+      - ejbca_data:/mnt/persistent
+volumes:
+  ejbca_data:
